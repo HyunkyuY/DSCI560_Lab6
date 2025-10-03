@@ -13,6 +13,10 @@ BASE_URL = "https://www.drillingedge.com/search"
 
 
 def search_well(api_number, well_name, headless=True):
+    if not api_number and not well_name:
+        print("Missing both api_number and well_name, skip search.")
+        return None
+    
     options = webdriver.FirefoxOptions()
     if headless:
         options.add_argument("--headless")
@@ -24,17 +28,25 @@ def search_well(api_number, well_name, headless=True):
         
         # find the search box
         # well name input
-        well_input = WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located((By.NAME, "well_name"))  
-        )
-        # api_number input
-        api_input = WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located((By.NAME, "api_no"))
-        )
+        if well_name:
+            well_input = WebDriverWait(driver, 10).until(
+                EC.presence_of_element_located((By.NAME, "well_name"))  
+            )
+            well_input.send_keys(well_name)
         
-        well_input.send_keys(well_name)
-        api_input.send_keys(api_number)
-        api_input.send_keys(Keys.RETURN)
+        # api_number input
+        if api_number:
+            api_input = WebDriverWait(driver, 10).until(
+                EC.presence_of_element_located((By.NAME, "api_no"))
+            )
+        
+            api_input.send_keys(api_number)
+            api_input.send_keys(Keys.RETURN)
+            
+        else:
+            # if there is no api_number, use well name to trigger searching
+            well_input.send_keys(Keys.RETURN)
+        
         
         # Wait for the search results and choose the first one
         result_link = WebDriverWait(driver, 10).until(
