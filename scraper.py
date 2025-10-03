@@ -70,6 +70,14 @@ def search_well(api_number, well_name, headless=True):
                 val = td.text.strip()
                 data[key] = val
         
+        # process lat and lon
+        lat, lon = None, None
+        if "Latitude / Longitude" in data:
+            coords = data["Latitude / Longitude"].split(",")
+            if len(coords) == 2:
+                lat = coords[0].strip()
+                lon = coords[1].strip()
+        
         # blcok_state - oil_bbl, gas_bbl
         stats = driver.find_elements(By.CSS_SELECTOR, "p.block_stat")
         
@@ -94,6 +102,8 @@ def search_well(api_number, well_name, headless=True):
             "status": data.get("Well Status", "N/A"),
             "type": data.get("Well Type", "N/A"),
             "city": data.get("Closest City", "N/A"),
+            "latitude": float(lat) if lat else None,
+            "longitude": float(lon) if lon else None,
             "oil_bbl": oil_val if oil_val is not None else 0,
             "oil_desc": oil_desc if oil_desc else "N/A",
             "gas_bbl": gas_val if gas_val is not None else 0,

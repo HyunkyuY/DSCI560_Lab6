@@ -42,6 +42,8 @@ def update_well(api_number, clean_data):
         clean_data["status"],
         clean_data["type"],
         clean_data["city"],
+        clean_data["latitude"],
+        clean_data["longitude"],
         clean_data["oil_bbl"],
         clean_data["oil_desc"],
         clean_data["gas_bbl"],
