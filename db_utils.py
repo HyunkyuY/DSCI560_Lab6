@@ -33,6 +33,7 @@ def update_well(api_number, clean_data):
     query = """
         UPDATE wells
         SET status=%s, type=%s, city=%s,
+            lat=%s, lon=%s,
             oil_bbl=%s, oil_desc=%s,
             gas_bbl=%s, gas_desc=%s
         WHERE api_number=%s
@@ -42,8 +43,8 @@ def update_well(api_number, clean_data):
         clean_data["status"],
         clean_data["type"],
         clean_data["city"],
-        clean_data["latitude"],
-        clean_data["longitude"],
+        clean_data["lat"],
+        clean_data["lon"],
         clean_data["oil_bbl"],
         clean_data["oil_desc"],
         clean_data["gas_bbl"],
