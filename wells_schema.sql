@@ -23,14 +23,14 @@ CREATE TABLE IF NOT EXISTS wells (
   lbs_proppant DECIMAL(12,2),
   max_treatment_pressure_psi DECIMAL(12,2),
   max_treatment_rate_bbls_per_min DECIMAL(12,2),
-  details TEXT
+  details TEXT,
 
   -- Columns needed after web scraping
   status VARCHAR(50) DEFAULT NULL,
   type VARCHAR(50) DEFAULT NULL,
   city VARCHAR(100) DEFAULT NULL,
   lat DECIMAL(10,6) DEFAULT NULL,
-  lon DECIMAL(10,6) DEFAULT NULL;
+  lon DECIMAL(10,6) DEFAULT NULL,
 
   oil_bbl INT DEFAULT NULL,
   oil_desc VARCHAR(255) DEFAULT NULL,
