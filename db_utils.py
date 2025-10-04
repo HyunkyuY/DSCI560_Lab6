@@ -26,7 +26,7 @@ def fetch_wells(limit=None):
     conn.close()
     return results
 
-def update_well(api_number, clean_data):
+def update_well(api_number, well_name, data):
     conn = get_connection()
     cursor = conn.cursor()
     
@@ -36,23 +36,22 @@ def update_well(api_number, clean_data):
             lat=%s, lon=%s,
             oil_bbl=%s, oil_desc=%s,
             gas_bbl=%s, gas_desc=%s
-        WHERE api_number=%s
+        WHERE well_name_number=%s
     """
     
     values = (
-        clean_data["status"],
-        clean_data["type"],
-        clean_data["city"],
-        clean_data["lat"],
-        clean_data["lon"],
-        clean_data["oil_bbl"],
-        clean_data["oil_desc"],
-        clean_data["gas_bbl"],
-        clean_data["gas_desc"],
-        api_number
+        data["status"],
+        data["type"],
+        data["city"],
+        data["lat"],
+        data["lon"],
+        data["oil_bbl"],
+        data["oil_desc"],
+        data["gas_bbl"],
+        data["gas_desc"],
+        well_name
     )
-    
-    
-    cursor.exevute(query, values)
+
+    cursor.execute(query, values)
     conn.commit()
     conn.close()
