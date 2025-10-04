@@ -34,8 +34,8 @@ def api_wells():
 
         for r in rows:
             # try multiple column name variants
-            latv = r.get('latitude') or r.get('lat') or r.get('Latitude')
-            lonv = r.get('longitude') or r.get('lon') or r.get('Longitude')
+            latv = r.get('lat') or r.get('latitude')
+            lonv = r.get('lon') or r.get('longitude')
             try:
                 lat = float(latv) if latv not in (None, '') else None
                 lon = float(lonv) if lonv not in (None, '') else None
@@ -60,8 +60,8 @@ def api_wells():
                 with csv_path.open(newline='', encoding='utf-8') as fh:
                     rdr = csv.DictReader(fh)
                     for r in rdr:
-                        latv = r.get('latitude') or r.get('lat') or r.get('Latitude') or r.get('LATITUDE')
-                        lonv = r.get('longitude') or r.get('lon') or r.get('Longitude') or r.get('LONGITUDE')
+                        latv = r.get('latitude')
+                        lonv = r.get('longitude')
                         try:
                             lat = float(latv) if latv not in (None, '', '0.0') else None
                             lon = float(lonv) if lonv not in (None, '', '0.0') else None
