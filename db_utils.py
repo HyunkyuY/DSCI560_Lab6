@@ -55,8 +55,3 @@ def update_well(api_number, well_name, data):
     cursor.execute(query, values)
     conn.commit()
     conn.close()
-    
-    if cursor.rowcount > 0:
-        print(f"Updated well by Well Name: {well_name}")
-    else:
-        print(f"Failed to update well {well_name} (no match in DB)")
