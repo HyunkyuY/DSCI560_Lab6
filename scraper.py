@@ -39,45 +39,65 @@ def search_well(api_number, well_name, headless=True):
     try:
         driver.get(BASE_URL)
         
+        
         # find the search box
-        # Search by well_name only
-        well_input = WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located((By.NAME, "well_name"))
-        )
-        well_input.clear()
-        well_input.send_keys(well_name)
-        well_input.send_keys(Keys.RETURN)
+        # Search by well_name
+        try:
+            well_input = WebDriverWait(driver, 10).until(
+                EC.presence_of_element_located((By.NAME, "well_name"))
+            )
+            well_input.clear()
+            well_input.send_keys(well_name)
+            well_input.send_keys(Keys.RETURN)
+            time.sleep(1.5)
         
-        
-        # Wait for the search results
-        links = WebDriverWait(driver, 10).until(
-            EC.presence_of_all_elements_located((By.CSS_SELECTOR, "table tr td a"))
-        )
+            # Wait for the search results
+            links = WebDriverWait(driver, 15).until(
+                EC.presence_of_all_elements_located((By.CSS_SELECTOR, "table tr td a"))
+            )
+        except:
+            links = []
         
         target_link = None
-        name_norm = normalize_name(well_name)
-        api_str = (api_number or "").strip()
-
-        for link in links:
-            link_text = link.text.strip().upper()
-            link_norm = normalize_name(link_text)
+        
+        # name_norm = normalize_name(well_name)
+        # api_str = (api_number or "").strip()
+        
+        if links:
+            target_link = links[0]
+            print(f"Found results for Well Name: {well_name}")
+        else:
+            # Fallback to API number
+            if not api_number:
+                print(f"No results for {well_name}, and no API number available.")
+                return None
+            print(f"No result by Well Name -> retrying search with API number: {api_number}")
+            driver.get(BASE_URL)
             
-            if name_norm in link_norm or link_norm in name_norm:
-                if api_str and api_str in (link.get_attribute("href") or ""):
-                    print(f"Found by Well Name & API match: {well_name} ({api_number})")
-                elif api_str:
-                    print(f"Well Name matched but API mismatch, fallback to Well Name: {well_name}")
-                else:
-                    print(f"Found by Well Name (no API check): {well_name}")
-
-                target_link = link
-                break
+            try:
+                api_input = WebDriverWait(driver, 10).until(
+                    EC.presence_of_element_located((By.NAME, "api_no"))
+                )
+                api_input.clear()
+                api_input.send_keys(api_number)
+                api_input.send_keys(Keys.RETURN)
+                time.sleep(2.0)
+                
+                api_links = WebDriverWait(driver, 15).until(
+                    EC.presence_of_all_elements_located((By.CSS_SELECTOR, "table tr td a"))
+                )
+            except:
+                api_links = []
+                
+            if api_links:
+                target_link = api_links[0]
+                print(f"Found results for API number: {api_number}")
+            else:
+                print(f"No results for both Well Name ({well_name}) and API ({api_number}).")
+                return None
         
-        if not target_link:
-            print(f"No matching link found for api={api_number}, well_name={well_name}")
-            return None
         
-        # click the well name
+        # Click the link and enter well details page
         WebDriverWait(driver, 10).until(EC.element_to_be_clickable(target_link))
         target_link.click()
         
@@ -87,7 +107,7 @@ def search_well(api_number, well_name, headless=True):
         )
     
         
-        # results table - status, type, closest city
+        # Results table - status, type, closest city
         rows = driver.find_elements(By.CSS_SELECTOR, "table tr")
         data = {}
         for row in rows:
