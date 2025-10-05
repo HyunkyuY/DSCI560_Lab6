@@ -47,4 +47,4 @@ def test_pipeline(limit=None, headless=True):
 
 if __name__ == "__main__":
     # limit=5 → only test 5 wells to avoid too many website requests
-    test_pipeline(limit=5, headless=False)
+    test_pipeline(limit=None, headless=False)
